@@ -3,6 +3,7 @@ import Link from "next/link";
 import { REGISTER_ROUTE } from "@/constants/routes";
 import "./loginPage.scss";
 import { useState } from "react";
+import {auth} from '@/services/firebase';
 
 const Login = () => {
 
@@ -21,6 +22,8 @@ const handleSubmit = (e: React.FormEvent) => {
     console.log("Form Submitted:", formData);
 };
 
+
+// console.log("verify ", auth.config);
     return (
         <div className="login-container">
             <div className="login-box">
@@ -44,7 +47,7 @@ const handleSubmit = (e: React.FormEvent) => {
                 value={formData.password}
                 onChange={handleChange}
             />
-            <button type="submit">Submit</button>
+            <button type="submit">Login</button>
         </form>
                 <div className="login-footer">
                     <span className="login-footer-text">

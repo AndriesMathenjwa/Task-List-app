@@ -1,10 +1,15 @@
 "use client";
 import React, { useState } from 'react';
 import Link from "next/link";
-import { LOGIN_ROUTE } from "@/constants/routes";
+import { LOGIN_ROUTE, PROFILE_ROUTE } from "@/constants/routes";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import "./registerPage.scss";
+import { useRouter } from "next/navigation";
+import { auth } from "@/services/firebase";
+
 
 const RegisterPage: React.FC = () => {
+  const router = useRouter();
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -17,12 +22,21 @@ const RegisterPage: React.FC = () => {
     };
 
     const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (formData.password !== formData.confirmPassword) {
-            alert("Passwords do not match!");
-            return;
-        }
-        console.log("Registration Form Submitted:", formData);
+      e.preventDefault();
+      createUserWithEmailAndPassword(auth, formData.email, formData.password)
+        .then((response) => {
+          alert("User Registered Successfully");
+          setFormData({
+            email: "",
+            password: "",
+            confirmPassword: ""
+          });
+          router.push(LOGIN_ROUTE);
+        })
+        .catch((e) => {
+          console.log("Error: ", e.message);
+          alert("Something went wrong, please try again");
+        });
     };
 
     return (
