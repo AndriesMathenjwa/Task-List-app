@@ -1,11 +1,14 @@
 "use client";
 import Link from "next/link";
-import { REGISTER_ROUTE } from "@/constants/routes";
+import { REGISTER_ROUTE, PROFILE_ROUTE, HOME_ROUTE } from "@/constants/routes";
 import "./loginPage.scss";
 import { useState } from "react";
-import {auth} from '@/services/firebase';
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { useRouter } from "next/navigation";
+import { auth } from "@/services/firebase";
 
 const Login = () => {
+    const router = useRouter();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -19,8 +22,15 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
 const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form Submitted:", formData);
-};
+    signInWithEmailAndPassword(auth, formData.email, formData.password)
+      .then(() => {
+        router.push(HOME_ROUTE); 
+      })
+      .catch((error) => {
+        console.log("Login Error: ", error.message);
+        alert("Invalid email or password. Please try again.");
+      });
+  };
 
 
 // console.log("verify ", auth.config);
