@@ -21,7 +21,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 7rem;
 }
 
 .login-title {
@@ -34,11 +33,18 @@
     color: #000;
 }
 
+    @media (max-width: 890px) {
+        .login-title {
+            font-size: 1.8rem;
+        }
+}
+
 .login-form {
     display: flex;
     flex-direction: column;
-    width: 80%;
+    width: 50%;
     margin: 1.5rem auto;
+    
 
     input {
         padding: 0.75rem;
@@ -87,9 +93,38 @@
             font-size: 1rem;
             margin-left: 0.25rem;
             cursor: pointer;
+
             &:hover {
                 text-decoration: underline;
             }
         }
+        @media (max-width: 675px) {
+            .register-link {
+                font-size: 0.9rem;
+                }
+        }
     }
 }
+
+
+
+@media (max-width: 890px) {
+    .login-form {
+        width: 100%;
+    }
+
+    .login-title {
+        font-size: 1.8rem;
+    }
+}
+@media (max-width: 670px) {
+    .login-form {
+        width: 100%;
+    }
+
+    .login-title {
+        font-size: 1.5rem;
+    }
+}
+
+

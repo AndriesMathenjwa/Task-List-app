@@ -1,6 +1,4 @@
 "use client";
-import Link from "next/link";
-import { REGISTER_ROUTE } from "@/constants/routes";
 import "./profilePage.scss";
 import { useState } from "react";
 import { FaUpload } from "react-icons/fa";
@@ -29,7 +27,17 @@ const Profile = () => {
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files ? e.target.files[0] : null;
-        setFormData({ ...formData, picture: file ? file.name : "" }); 
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64Image = (reader.result as string).split(",")[1];
+                setFormData({ ...formData, picture: base64Image });
+            };
+            reader.readAsDataURL(file);
+        } else {
+            setFormData({ ...formData, picture: "" }); 
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -51,6 +59,23 @@ const Profile = () => {
                 await updatePassword(user, formData.password);
             }
 
+            const fileName = `${user.displayName || "user"}-image`;
+
+            const apiResponse = await fetch("https://n8vz7jrx74.execute-api.eu-west-1.amazonaws.com/dev/tasks", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    image: formData.picture,
+                    fileName: fileName
+                }),
+            });
+
+            if (!apiResponse.ok) {
+                throw new Error("Failed to upload image");
+            }
+
             await setDoc(doc(db, "users", user.uid), {
                 name: formData.name,
                 email: user.email,
@@ -63,6 +88,7 @@ const Profile = () => {
             alert("Error updating profile. Please try again.");
         }
     };
+
 
     return (
         <div className="login-container">

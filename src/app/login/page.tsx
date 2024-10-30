@@ -38,12 +38,12 @@ const handleSubmit = (e: React.FormEvent) => {
         <div className="login-container">
             <div className="login-box">
                 <div className="login-header">
-                    <span className="login-title">Welcome To SignIn</span>
+                    <span className="login-title">Welcome SignIn</span>
                 </div>
                 <form className="login-form" onSubmit={handleSubmit}>
             <input
                 type="text"
-                placeholder="Enter Your Email Here..."
+                placeholder="Email"
                 name="email"
                 aria-label="Email"
                 value={formData.email}
@@ -51,7 +51,7 @@ const handleSubmit = (e: React.FormEvent) => {
             />
             <input
                 type="password"
-                placeholder="Enter Your Password Here..."
+                placeholder="Password"
                 name="password"
                 aria-label="Password"
                 value={formData.password}
