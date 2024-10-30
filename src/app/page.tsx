@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { db } from "@/services/firebase";
-import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
+import { collection, addDoc, getDocs, updateDoc,deleteDoc, doc, query, where } from "firebase/firestore";
 import { auth } from "@/services/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { FaTrash, FaEdit } from "react-icons/fa";
@@ -21,6 +21,7 @@ export default function Home() {
   const [category, setCategory] = useState("");
   const [title, setTitle] = useState("");
   const [details, setDetails] = useState("");
+  const [editTaskId, setEditTaskId] = useState<string | null>(null);
   const [userLoaded, setUserLoaded] = useState(false);
 
   useEffect(() => {
@@ -47,17 +48,25 @@ export default function Home() {
     setTasks(tasksArray);
   };
 
-  const handleAddTask = async () => {
+  const handleAddOrUpdateTask = async () => {
     if (auth.currentUser) {
-      const newTask: TaskData = {
-        category,
-        title,
-        details,
-        id: "",
-        userId: auth.currentUser.uid,
-      };
-      const docRef = await addDoc(collection(db, 'tasks'), newTask);
-      setTasks([...tasks, { ...newTask, id: docRef.id }]);
+      if (editTaskId) {
+        const taskRef = doc(db, 'tasks', editTaskId); 
+        await updateDoc(taskRef, { category, title, details }); 
+        setTasks(tasks.map(task => task.id === editTaskId ? { ...task, category, title, details } : task)); 
+        setEditTaskId(null); 
+      } else {
+
+        const newTask: TaskData = {
+          category,
+          title,
+          details,
+          userId: auth.currentUser.uid,
+        };
+        const docRef = await addDoc(collection(db, 'tasks'), newTask);
+        setTasks([...tasks, { ...newTask, id: docRef.id }]);
+      }
+
       setCategory("");
       setTitle("");
       setDetails("");
@@ -65,10 +74,24 @@ export default function Home() {
     }
   };
 
+  const handleEditTask = (task: TaskData) => {
+    setCategory(task.category);
+    setTitle(task.title);
+    setDetails(task.details);
+    setEditTaskId(task.id || null); 
+    setShowForm(true); 
+  };
+
+  const handleDeleteTask = async (taskId: string) => {
+    const taskRef = doc(db, 'tasks', taskId); 
+    await deleteDoc(taskRef); 
+    setTasks(tasks.filter(task => task.id !== taskId));
+  };
+
   return (
     <div className="task-app">
       <h1>Task-List App</h1>
-      <button className="add-task-btn" onClick={() => setShowForm(true)}>+</button>
+      <button className="add-task-btn" onClick={() => { setShowForm(true); setEditTaskId(null); }}>+</button>
 
       {showForm && (
         <div className="task-form">
@@ -89,7 +112,7 @@ export default function Home() {
             value={details}
             onChange={(e) => setDetails(e.target.value)}
           ></textarea>
-          <button onClick={handleAddTask}>Add Task</button>
+          <button onClick={handleAddOrUpdateTask}>{editTaskId ? "Update Task" : "Add Task"}</button> 
           <button onClick={() => setShowForm(false)}>Cancel</button>
         </div>
       )}
@@ -100,8 +123,8 @@ export default function Home() {
             <div className="task" key={task.id || index}>
               <p>{task.title}</p>
               <div className="task-actions">
-                <button><FaTrash /></button>
-                <button><FaEdit /></button>
+                <button onClick={() => handleEditTask(task)}><FaEdit /></button> 
+                <button onClick={() => handleDeleteTask(task.id || "")}><FaTrash /></button>
               </div>
             </div>
           ))
