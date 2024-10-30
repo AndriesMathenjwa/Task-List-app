@@ -1,10 +1,28 @@
 "use client";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { HOME_ROUTE, LOGIN_ROUTE, PROFILE_ROUTE, REGISTER_ROUTE } from "@/constants/routes";
+import { auth } from "@/services/firebase";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { useRouter } from "next/navigation";
 import "./header.scss";
 
 const Header = () => {
-    const isLogin = false;
+    const [isLogin, setIsLogin] = useState(false);
+    const router = useRouter();
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            setIsLogin(!!user);
+        });
+        return () => unsubscribe();
+    }, []);
+
+    const handleLogout = async () => {
+        await signOut(auth);
+        setIsLogin(false); 
+        router.push(LOGIN_ROUTE); 
+    };
 
     return (
         <header className="header">
@@ -16,7 +34,7 @@ const Header = () => {
                     {isLogin ? (
                         <>
                             <Link href={PROFILE_ROUTE}><li>Profile</li></Link>
-                            <Link href={HOME_ROUTE}><li>Logout</li></Link>
+                            <li onClick={handleLogout}>Logout</li>
                         </>
                     ) : (
                         <>

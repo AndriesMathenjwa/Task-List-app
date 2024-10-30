@@ -1,35 +1,68 @@
-"use client"
-import Image from "next/image";
-import "./homePage.scss";
+"use client";
+import React, { useState, useEffect } from 'react';
 import { db } from "@/services/firebase";
-import { collection, addDoc, getDoc, deleteDoc, query, serverTimestamp, orderBy, doc,updateDoc, getDocs, DocumentReference} from "firebase/firestore"
-import React, {useState, useEffect} from 'react'
-import { FaTrash, FaEdit } from "react-icons/fa"; 
-
+import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
+import { auth } from "@/services/firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import { FaTrash, FaEdit } from "react-icons/fa";
+import "./homePage.scss";
 
 interface TaskData {
   category: string;
   title: string;
   details: string;
+  id?: string;
+  userId?: string;
 }
 
 export default function Home() {
-  const [tasks, setTasks] = useState<TaskData[]>([
-    { category: "Personal", title: "Pay your bills", details: "Electricity and water bills" },
-    { category: "Work", title: "Review code", details: "Check PRs and refactor" },
-  ]);
+  const [tasks, setTasks] = useState<TaskData[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [category, setCategory] = useState("");
   const [title, setTitle] = useState("");
   const [details, setDetails] = useState("");
+  const [userLoaded, setUserLoaded] = useState(false);
 
-  const handleAddTask = () => {
-    const newTask = { category, title, details };
-    setTasks([...tasks, newTask]);
-    setCategory("");
-    setTitle("");
-    setDetails("");
-    setShowForm(false);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        fetchTasks(user.uid);
+      }
+      setUserLoaded(true); 
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const fetchTasks = async (userId: string) => {
+    const userTasksRef = collection(db, 'tasks');
+    const q = query(userTasksRef, where('userId', '==', userId));
+    const querySnapshot = await getDocs(q);
+    const tasksArray = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      category: doc.data().category || "",
+      title: doc.data().title || "",
+      details: doc.data().details || "",
+    })) as TaskData[];
+    setTasks(tasksArray);
+  };
+
+  const handleAddTask = async () => {
+    if (auth.currentUser) {
+      const newTask: TaskData = {
+        category,
+        title,
+        details,
+        id: "",
+        userId: auth.currentUser.uid,
+      };
+      const docRef = await addDoc(collection(db, 'tasks'), newTask);
+      setTasks([...tasks, { ...newTask, id: docRef.id }]);
+      setCategory("");
+      setTitle("");
+      setDetails("");
+      setShowForm(false);
+    }
   };
 
   return (
@@ -62,17 +95,20 @@ export default function Home() {
       )}
 
       <div className="task-list">
-        {tasks.map((task, index) => (
-          <div className="task" key={index}>
-            <p>{task.title}</p>
-            <div className="task-actions">
-            <button><FaTrash /></button>
-            <button><FaEdit /></button>
+        {userLoaded ? (
+          tasks.map((task, index) => (
+            <div className="task" key={task.id || index}>
+              <p>{task.title}</p>
+              <div className="task-actions">
+                <button><FaTrash /></button>
+                <button><FaEdit /></button>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p>Loading tasks...</p>
+        )}
       </div>
     </div>
   );
 }
-
