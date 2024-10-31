@@ -1,10 +1,11 @@
-"use client";
+"use client"
 import React, { useState, useEffect } from 'react';
 import { db } from "@/services/firebase";
-import { collection, addDoc, getDocs, updateDoc,deleteDoc, doc, query, where } from "firebase/firestore";
+import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, where } from "firebase/firestore";
 import { auth } from "@/services/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { FaTrash, FaEdit } from "react-icons/fa";
+import TaskForm from "@/components/TaskForm";
 import "./homePage.scss";
 
 interface TaskData {
@@ -18,9 +19,6 @@ interface TaskData {
 export default function Home() {
   const [tasks, setTasks] = useState<TaskData[]>([]);
   const [showForm, setShowForm] = useState(false);
-  const [category, setCategory] = useState("");
-  const [title, setTitle] = useState("");
-  const [details, setDetails] = useState("");
   const [editTaskId, setEditTaskId] = useState<string | null>(null);
   const [userLoaded, setUserLoaded] = useState(false);
 
@@ -29,7 +27,7 @@ export default function Home() {
       if (user) {
         fetchTasks(user.uid);
       }
-      setUserLoaded(true); 
+      setUserLoaded(true);
     });
 
     return () => unsubscribe();
@@ -48,45 +46,41 @@ export default function Home() {
     setTasks(tasksArray);
   };
 
-  const handleAddOrUpdateTask = async () => {
-    if (auth.currentUser) {
-      if (editTaskId) {
-        const taskRef = doc(db, 'tasks', editTaskId); 
-        await updateDoc(taskRef, { category, title, details }); 
-        setTasks(tasks.map(task => task.id === editTaskId ? { ...task, category, title, details } : task)); 
-        setEditTaskId(null); 
-      } else {
-
-        const newTask: TaskData = {
-          category,
-          title,
-          details,
-          userId: auth.currentUser.uid,
-        };
-        const docRef = await addDoc(collection(db, 'tasks'), newTask);
-        setTasks([...tasks, { ...newTask, id: docRef.id }]);
-      }
-
-      setCategory("");
-      setTitle("");
-      setDetails("");
-      setShowForm(false);
+  const handleAddOrUpdateTask = async (task: TaskData) => {
+    if (task.id) {
+      const taskRef = doc(db, 'tasks', task.id);
+      await updateDoc(taskRef, { category: task.category, title: task.title, details: task.details });
+      setTasks(tasks.map(t => t.id === task.id ? { ...t, category: task.category, title: task.title, details: task.details } : t));
+      setEditTaskId(null);
+    } else {
+      const newTask: TaskData = {
+        category: task.category,
+        title: task.title,
+        details: task.details,
+        userId: auth.currentUser?.uid,
+      };
+      const docRef = await addDoc(collection(db, 'tasks'), newTask);
+      setTasks([...tasks, { ...newTask, id: docRef.id }]);
     }
   };
 
+
   const handleEditTask = (task: TaskData) => {
-    setCategory(task.category);
-    setTitle(task.title);
-    setDetails(task.details);
-    setEditTaskId(task.id || null); 
-    setShowForm(true); 
+    setEditTaskId(task.id || null);
+    setShowForm(true);
   };
 
   const handleDeleteTask = async (taskId: string) => {
-    const taskRef = doc(db, 'tasks', taskId); 
-    await deleteDoc(taskRef); 
+    const taskRef = doc(db, 'tasks', taskId);
+    await deleteDoc(taskRef);
     setTasks(tasks.filter(task => task.id !== taskId));
   };
+
+  const groupedTasks = tasks.reduce((acc: Record<string, TaskData[]>, task) => {
+    acc[task.category] = acc[task.category] || [];
+    acc[task.category].push(task);
+    return acc;
+  }, {});
 
   return (
     <div className="task-app">
@@ -94,38 +88,29 @@ export default function Home() {
       <button className="add-task-btn" onClick={() => { setShowForm(true); setEditTaskId(null); }}>+</button>
 
       {showForm && (
-        <div className="task-form">
-          <input
-            type="text"
-            placeholder="Category"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-          <textarea
-            placeholder="Details"
-            value={details}
-            onChange={(e) => setDetails(e.target.value)}
-          ></textarea>
-          <button onClick={handleAddOrUpdateTask}>{editTaskId ? "Update Task" : "Add Task"}</button> 
-          <button onClick={() => setShowForm(false)}>Cancel</button>
-        </div>
+        <TaskForm
+          editTaskId={editTaskId}
+          onClose={() => setShowForm(false)}
+          onSubmit={handleAddOrUpdateTask}
+          initialValues={editTaskId ? tasks.find(task => task.id === editTaskId) : undefined}
+        />
+
       )}
 
       <div className="task-list">
         {userLoaded ? (
-          tasks.map((task, index) => (
-            <div className="task" key={task.id || index}>
-              <p>{task.title}</p>
-              <div className="task-actions">
-                <button onClick={() => handleEditTask(task)}><FaEdit /></button> 
-                <button onClick={() => handleDeleteTask(task.id || "")}><FaTrash /></button>
-              </div>
+          Object.keys(groupedTasks).map((category) => (
+            <div key={category} className="task-category">
+              <h2>{category}</h2>
+              {groupedTasks[category].map((task) => (
+                <div className="task" key={task.id}>
+                  <p>{task.title}</p>
+                  <div className="task-actions">
+                    <button onClick={() => handleEditTask(task)}><FaEdit /></button>
+                    <button onClick={() => handleDeleteTask(task.id || "")}><FaTrash /></button>
+                  </div>
+                </div>
+              ))}
             </div>
           ))
         ) : (
