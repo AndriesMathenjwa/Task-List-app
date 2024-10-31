@@ -15,6 +15,7 @@ import { auth } from "@/services/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { FaTrash, FaEdit } from "react-icons/fa";
 import TaskForm from "@/components/TaskForm";
+import ProtectedRoute from "@/components/ProtectedRoute"
 import "./homePage.scss";
 
 interface TaskData {
@@ -104,6 +105,7 @@ export default function Home() {
   );
 
   return (
+    <ProtectedRoute>
     <div className="task-app">
       <h1>Task-List App</h1>
       <button
@@ -150,5 +152,6 @@ export default function Home() {
         )}
       </div>
     </div>
+    </ProtectedRoute>
   );
 }
