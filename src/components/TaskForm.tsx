@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import "./taskForm.scss"
-
+import "./taskForm.scss";
 
 interface TaskData {
     category: string;

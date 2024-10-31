@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { REGISTER_ROUTE, PROFILE_ROUTE, HOME_ROUTE } from "@/constants/routes";
+import { REGISTER_ROUTE, HOME_ROUTE } from "@/constants/routes";
 import "./loginPage.scss";
 import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -9,56 +9,53 @@ import { auth } from "@/services/firebase";
 
 const Login = () => {
     const router = useRouter();
+    const [formData, setFormData] = useState({
+        email: "",
+        password: ""
+    });
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: ""
-});
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
 
-const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-};
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        signInWithEmailAndPassword(auth, formData.email, formData.password)
+            .then(() => {
+                router.push(HOME_ROUTE);
+            })
+            .catch((error) => {
+                console.log("Login Error: ", error.message);
+                alert("Invalid email or password. Please try again.");
+            });
+    };
 
-const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    signInWithEmailAndPassword(auth, formData.email, formData.password)
-      .then(() => {
-        router.push(HOME_ROUTE); 
-      })
-      .catch((error) => {
-        console.log("Login Error: ", error.message);
-        alert("Invalid email or password. Please try again.");
-      });
-  };
-
-
-// console.log("verify ", auth.config);
     return (
         <div className="login-container">
             <div className="login-box">
                 <div className="login-header">
-                    <span className="login-title">Welcome SignIn</span>
+                    <span className="login-title">Welcome Sign In</span>
                 </div>
                 <form className="login-form" onSubmit={handleSubmit}>
-            <input
-                type="text"
-                placeholder="Email"
-                name="email"
-                aria-label="Email"
-                value={formData.email}
-                onChange={handleChange}
-            />
-            <input
-                type="password"
-                placeholder="Password"
-                name="password"
-                aria-label="Password"
-                value={formData.password}
-                onChange={handleChange}
-            />
-            <button type="submit">Login</button>
-        </form>
+                    <input
+                        type="text"
+                        placeholder="Email"
+                        name="email"
+                        aria-label="Email"
+                        value={formData.email}
+                        onChange={handleChange}
+                    />
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        name="password"
+                        aria-label="Password"
+                        value={formData.password}
+                        onChange={handleChange}
+                    />
+                    <button type="submit">Login</button>
+                </form>
                 <div className="login-footer">
                     <span className="login-footer-text">
                         Don't have an account?
@@ -70,6 +67,6 @@ const handleSubmit = (e: React.FormEvent) => {
             </div>
         </div>
     );
-}
+};
 
 export default Login;

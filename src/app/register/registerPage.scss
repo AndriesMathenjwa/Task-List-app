@@ -7,7 +7,8 @@
 }
 
 .register-box {
-    width: 50%;
+    width: 90%;
+    max-width: 500px; 
     border-radius: 10px;
     background-color: rgba(255, 255, 255, 0.3);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -21,7 +22,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 7rem;
+    height: auto;
+    margin-bottom: 1rem;
 }
 
 .register-title {
@@ -33,16 +35,11 @@
     border-radius: 0.5rem;
     color: #000;
 }
-@media (max-width: 810px) {
-    .register-title {
-        font-size: 1rem;
-    }
-}
 
 .register-form {
     display: flex;
     flex-direction: column;
-    width: 80%;
+    width: 100%; 
     margin: 1.5rem auto;
 
     input {
@@ -92,9 +89,38 @@
             font-size: 1rem;
             margin-left: 0.25rem;
             cursor: pointer;
+
             &:hover {
                 text-decoration: underline;
             }
         }
+    }
+}
+
+@media (max-width: 900px) {
+    .register-title {
+        font-size: 1.5rem; 
+    }
+
+    .register-box {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .register-title {
+        font-size: 1.2rem;
+    }
+
+    .register-form {
+        width: 100%;
+    }
+
+    .register-footer-text {
+        font-size: 0.75rem; 
+    }
+
+    button {
+        font-size: 0.9rem;
     }
 }

@@ -3,19 +3,19 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  background: linear-gradient(to bottom right, rgba(255, 223, 0, 0.2), rgba(0, 123, 255, 0.3), rgba(138, 43, 226, 0.6));
+  justify-content: flex-start;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 223, 0, 0.2),
+    rgba(0, 123, 255, 0.3),
+    rgba(138, 43, 226, 0.6)
+  );
+  padding: 1rem;
 }
 
-.task-header {
+h1 {
   font-size: 2rem;
-  font-family: monospace;
-  font-weight: 600;
-  background-color: #FFEB3B;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  color: #000;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .add-task-btn {
@@ -23,33 +23,33 @@
   font-size: 1.5rem;
   font-weight: bold;
   color: #171414;
-  background-color: #FFEB3B;
+  background-color: #ffeb3b;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s;
+  margin-bottom: 1rem;
 }
 
 .add-task-btn:hover {
   background-color: #b4a732;
 }
 
-
-
 .task-list {
-  width: 45%;
+  width: 100%;
+  max-width: 600px; 
   display: flex;
   flex-direction: column;
 }
 
-.category-group {
+.task-category {
   margin-bottom: 1.5rem;
   padding: 1rem;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 8px;
 }
 
-.category-title {
+.task-category h2 {
   font-size: 1.5rem;
   font-weight: 600;
   color: #000;
@@ -86,5 +86,38 @@
 }
 
 .task-actions button:hover {
-  color: #FFEB3B;
+  color: #ffeb3b;
+}
+@media (max-width: 768px) {
+  .add-task-btn {
+    width: 100%; 
+  }
+
+  .task-category h2 {
+    font-size: 1.3rem;
+  }
+
+  .task p {
+    font-size: 1rem; 
+  }
+
+  .task {
+    flex-direction: column; 
+    align-items: flex-start; 
+  }
+
+  .task-actions {
+    margin-top: 0.5rem; 
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.5rem; 
+  }
+
+  .task-category h2 {
+    font-size: 1.2rem; 
+  }
 }

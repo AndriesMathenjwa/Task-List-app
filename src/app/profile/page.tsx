@@ -19,7 +19,10 @@ const Profile = () => {
         password: "",
         picture: "", 
     });
-    
+
+    // New state for the selected file name
+    const [fileName, setFileName] = useState<string>("");
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -35,32 +38,33 @@ const Profile = () => {
                 setFormData({ ...formData, picture: base64Image });
             };
             reader.readAsDataURL(file);
+            
+            setFileName(file.name); 
         } else {
-            setFormData({ ...formData, picture: "" }); 
+            setFormData({ ...formData, picture: "" });
+            setFileName("");  
         }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
+    
         const user = auth.currentUser;
         if (!user) return;
-
+    
         try {
             if (formData.name) {
                 await updateProfile(user, { displayName: formData.name });
             }
-
+    
             if (formData.email && formData.email !== user.email) {
                 await updateEmail(user, formData.email);
             }
-
+    
             if (formData.password) {
                 await updatePassword(user, formData.password);
             }
-
-            const fileName = `${user.displayName || "user"}-image`;
-
+    
             const apiResponse = await fetch("https://n8vz7jrx74.execute-api.eu-west-1.amazonaws.com/dev/tasks", {
                 method: "POST",
                 headers: {
@@ -68,27 +72,29 @@ const Profile = () => {
                 },
                 body: JSON.stringify({
                     image: formData.picture,
-                    fileName: fileName
+                    fileName: `${user.displayName || "user"}-image`
                 }),
             });
-
+    
             if (!apiResponse.ok) {
                 throw new Error("Failed to upload image");
             }
-
+    
+            const responseData = await apiResponse.json(); 
+            const imageUrl = responseData.url; 
+    
             await setDoc(doc(db, "users", user.uid), {
                 name: formData.name,
                 email: user.email,
-                profilePicture: formData.picture
+                profilePicture: imageUrl 
             });
-
+    
             alert("Profile updated successfully!");
         } catch (error) {
             console.error("Error updating profile:", error);
             alert("Error updating profile. Please try again.");
         }
     };
-
 
     return (
         <div className="login-container">
@@ -133,6 +139,7 @@ const Profile = () => {
                             onChange={handleFileChange}
                         />
                     </div>
+                    {fileName && <p>{fileName}</p>}
                     <button type="submit">Update</button>
                 </form>
             </div>
