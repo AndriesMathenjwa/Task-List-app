@@ -87,7 +87,9 @@ const Profile = () => {
                 email: user.email,
                 profilePicture: imageUrl 
             });
-    
+            const event = new CustomEvent("profileUpdated");
+            window.dispatchEvent(event);
+            
             alert("Profile updated successfully!");
         } catch (error) {
             console.error("Error updating profile:", error);
@@ -99,12 +101,12 @@ const Profile = () => {
         <div className="login-container">
             <div className="login-box">
                 <div className="login-header">
-                    <span className="login-title">Profile update</span>
+                    <span className="login-title">Profile Update</span>
                 </div>
                 <form className="login-form" onSubmit={handleSubmit}>
                     <input
                         type="text"
-                        placeholder="Enter Your full name..."
+                        placeholder="Enter Your Full Name..."
                         name="name"
                         aria-label="name"
                         value={formData.name}

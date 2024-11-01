@@ -1,0 +1,75 @@
+.profile-display-container {
+    position: relative;
+    text-align: center;
+
+    .profile-picture, .no-profile-icon {
+        cursor: pointer;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+        &:hover {
+            transform: scale(1.2); 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
+        }
+    }
+
+    .profile-picture {
+        object-fit: cover;
+    }
+
+    .no-profile-icon {
+        background-color: #e0e0e0;
+        color: #666; 
+        
+        .icon {
+            font-size: 30px; 
+        }
+    }
+
+    .menu {
+        position: absolute;
+        top: 70px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        z-index: 10;
+        width: 120px;
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 5px;
+            width: 100%;
+
+            &:hover {
+                background-color: #f0f0f0;
+                border-radius: 5px;
+            }
+
+            .menu-icon {
+                font-size: 18px;
+                color: #666;
+            }
+
+            span {
+                font-size: 14px;
+                color: #333;
+            }
+        }
+    }
+}

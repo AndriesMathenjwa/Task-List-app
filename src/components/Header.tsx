@@ -4,16 +4,20 @@ import { useEffect, useState } from "react";
 import { HOME_ROUTE, LOGIN_ROUTE, PROFILE_ROUTE, REGISTER_ROUTE } from "@/constants/routes";
 import { auth } from "@/services/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import ProfileDisplay from "@/components/ProfileDisplay";
 import "./header.scss";
 
 const Header = () => {
     const [isLogin, setIsLogin] = useState(false);
+    const [loading, setLoading] = useState(true);
     const router = useRouter();
+    const pathname = usePathname();
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             setIsLogin(!!user);
+            setLoading(false); 
         });
         return () => unsubscribe();
     }, []);
@@ -31,12 +35,7 @@ const Header = () => {
                     <div className="logo">taskList</div>
                 </Link>
                 <ul className="nav-links">
-                    {isLogin ? (
-                        <>
-                            <Link href={PROFILE_ROUTE}><li>Profile</li></Link>
-                            <li onClick={handleLogout}>Logout</li>
-                        </>
-                    ) : (
+                    {!loading && !isLogin && ( 
                         <>
                             <Link href={LOGIN_ROUTE}><li>Login</li></Link>
                             <Link href={REGISTER_ROUTE}><li>Register</li></Link>
@@ -44,6 +43,9 @@ const Header = () => {
                     )}
                 </ul>
             </nav>
+            {(pathname === PROFILE_ROUTE || pathname === HOME_ROUTE) && (
+                <ProfileDisplay />
+            )}
         </header>
     );
 };
