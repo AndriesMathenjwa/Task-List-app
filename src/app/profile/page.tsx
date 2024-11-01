@@ -20,7 +20,6 @@ const Profile = () => {
         picture: "", 
     });
 
-    // New state for the selected file name
     const [fileName, setFileName] = useState<string>("");
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

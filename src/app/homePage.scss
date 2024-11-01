@@ -16,6 +16,7 @@
 h1 {
   font-size: 2rem;
   margin-bottom: 1rem;
+  margin-top: 3rem;
 }
 
 .add-task-btn {
@@ -37,7 +38,7 @@ h1 {
 
 .task-list {
   width: 100%;
-  max-width: 600px; 
+  max-width: 500px; 
   display: flex;
   flex-direction: column;
 }
