@@ -8,7 +8,7 @@
 
 .register-box {
     width: 90%;
-    max-width: 500px; 
+    max-width: 500px;
     border-radius: 10px;
     background-color: rgba(255, 255, 255, 0.3);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -40,7 +40,7 @@
 .register-form {
     display: flex;
     flex-direction: column;
-    width: 100%; 
+    width: 100%;
     margin: 1.5rem auto;
 
     input {
@@ -100,7 +100,7 @@
 
 @media (max-width: 900px) {
     .register-title {
-        font-size: 1.5rem; 
+        font-size: 1.5rem;
     }
 
     .register-box {
@@ -118,7 +118,7 @@
     }
 
     .register-footer-text {
-        font-size: 0.75rem; 
+        font-size: 0.75rem;
     }
 
     button {

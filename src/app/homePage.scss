@@ -4,12 +4,10 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  background: linear-gradient(
-    to bottom right,
-    rgba(255, 223, 0, 0.2),
-    rgba(0, 123, 255, 0.3),
-    rgba(138, 43, 226, 0.6)
-  );
+  background: linear-gradient(to bottom right,
+      rgba(255, 223, 0, 0.2),
+      rgba(0, 123, 255, 0.3),
+      rgba(138, 43, 226, 0.6));
   padding: 1rem;
 }
 
@@ -38,7 +36,7 @@ h1 {
 
 .task-list {
   width: 100%;
-  max-width: 500px; 
+  max-width: 500px;
   display: flex;
   flex-direction: column;
 }
@@ -89,9 +87,10 @@ h1 {
 .task-actions button:hover {
   color: #ffeb3b;
 }
+
 @media (max-width: 768px) {
   .add-task-btn {
-    width: 100%; 
+    width: 100%;
   }
 
   .task-category h2 {
@@ -99,26 +98,25 @@ h1 {
   }
 
   .task p {
-    font-size: 1rem; 
+    font-size: 1rem;
   }
 
   .task {
-    // flex-direction: column; 
-    align-items: flex-start; 
+    align-items: flex-start;
   }
 
   .task-actions {
-    margin-top: 0.5rem; 
+    margin-top: 0.5rem;
     justify-content: flex-start;
   }
 }
 
 @media (max-width: 480px) {
   h1 {
-    font-size: 1.5rem; 
+    font-size: 1.5rem;
   }
 
   .task-category h2 {
-    font-size: 1.2rem; 
+    font-size: 1.2rem;
   }
 }

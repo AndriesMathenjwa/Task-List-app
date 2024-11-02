@@ -14,6 +14,9 @@ const Login = () => {
         password: ""
     });
 
+    const [error, setError] = useState<string>("");
+    const [isBlinking, setIsBlinking] = useState<boolean>(false);
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -27,7 +30,13 @@ const Login = () => {
             })
             .catch((error) => {
                 console.log("Login Error: ", error.message);
-                alert("Invalid email or password. Please try again.");
+                setError("Invalid email or password");
+                setIsBlinking(true);
+
+                setTimeout(() => {
+                    setIsBlinking(false);
+                    setError("");
+                }, 5000);
             });
     };
 
@@ -55,6 +64,11 @@ const Login = () => {
                         onChange={handleChange}
                     />
                     <button type="submit">Login</button>
+                    {error && (
+                        <p className={`error ${isBlinking ? "blink" : ""}`}>
+                            {error}
+                        </p>
+                    )}
                 </form>
                 <div className="login-footer">
                     <span className="login-footer-text">

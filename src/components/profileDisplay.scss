@@ -2,7 +2,8 @@
     position: relative;
     text-align: center;
 
-    .profile-picture, .no-profile-icon {
+    .profile-picture,
+    .no-profile-icon {
         cursor: pointer;
         width: 60px;
         height: 60px;
@@ -13,8 +14,8 @@
         transition: transform 0.3s ease, box-shadow 0.3s ease;
 
         &:hover {
-            transform: scale(1.2); 
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
+            transform: scale(1.2);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
     }
 
@@ -24,10 +25,10 @@
 
     .no-profile-icon {
         background-color: #e0e0e0;
-        color: #666; 
-        
+        color: #666;
+
         .icon {
-            font-size: 30px; 
+            font-size: 30px;
         }
     }
 

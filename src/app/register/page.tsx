@@ -1,15 +1,18 @@
 "use client";
 import React, { useState } from 'react';
 import Link from "next/link";
-import { LOGIN_ROUTE, PROFILE_ROUTE } from "@/constants/routes";
+import { LOGIN_ROUTE } from "@/constants/routes";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import "./registerPage.scss";
 import { useRouter } from "next/navigation";
 import { auth } from "@/services/firebase";
+import Swal from "sweetalert2";
 
 
 const RegisterPage: React.FC = () => {
-  const router = useRouter();
+    const router = useRouter();
+    const [error, setError] = useState<string>("");
+    const [isBlinking, setIsBlinking] = useState<boolean>(false);
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -22,21 +25,46 @@ const RegisterPage: React.FC = () => {
     };
 
     const handleSubmit = (e: React.FormEvent) => {
-      e.preventDefault();
-      createUserWithEmailAndPassword(auth, formData.email, formData.password)
-        .then((response) => {
-          alert("User Registered Successfully");
-          setFormData({
-            email: "",
-            password: "",
-            confirmPassword: ""
-          });
-          router.push(LOGIN_ROUTE);
-        })
-        .catch((e) => {
-          console.log("Error: ", e.message);
-          alert("Something went wrong, please try again");
-        });
+        e.preventDefault();
+        createUserWithEmailAndPassword(auth, formData.email, formData.password)
+            .then((response) => {
+                Swal.fire({
+                    title: "Success",
+                    text: "User Registered Successfully!",
+                    icon: "success",
+                    customClass: {
+                        confirmButton: "swal-confirm-button",
+                    },
+                    buttonsStyling: true,
+                    confirmButtonColor: "#4CAF50",
+                });
+                setFormData({
+                    email: "",
+                    password: "",
+                    confirmPassword: ""
+                });
+                router.push(LOGIN_ROUTE);
+            })
+            .catch((error) => {
+                let errorMessage = "Something went wrong, please try again.";
+                if (error.code === "auth/missing-password") {
+                    errorMessage = "Please enter a password.";
+                } else if (error.code === "auth/email-already-in-use") {
+                    errorMessage = "email is already in use";
+                } else if (error.code === "auth/invalid-email") {
+                    errorMessage = "Please enter a valid email address.";
+                } else if (error.code === "auth/weak-password") {
+                    errorMessage = "Password should be at least 6 characters.";
+                }
+
+                setError(errorMessage);
+                setIsBlinking(true);
+
+                setTimeout(() => {
+                    setIsBlinking(false);
+                    setError("");
+                }, 5000);
+            });
     };
 
     return (
@@ -71,6 +99,11 @@ const RegisterPage: React.FC = () => {
                         onChange={handleChange}
                     />
                     <button type="submit">Register</button>
+                    {error && (
+                        <p className={`error ${isBlinking ? "blink" : ""}`}>
+                            {error}
+                        </p>
+                    )}
                 </form>
                 <div className="register-footer">
                     <span className="register-footer-text">

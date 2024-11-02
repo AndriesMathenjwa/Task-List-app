@@ -106,52 +106,52 @@ export default function Home() {
 
   return (
     <ProtectedRoute>
-    <div className="task-app">
-      <h1>Task-List App</h1>
-      <button
-        className="add-task-btn"
-        onClick={() => {
-          setShowForm(true);
-          setEditTaskId(null);
-        }}
-      >
-        +
-      </button>
+      <div className="task-app">
+        <h1>Task-List App</h1>
+        <button
+          className="add-task-btn"
+          onClick={() => {
+            setShowForm(true);
+            setEditTaskId(null);
+          }}
+        >
+          +
+        </button>
 
-      {showForm && (
-        <TaskForm
-          editTaskId={editTaskId}
-          onClose={() => setShowForm(false)}
-          onSubmit={handleAddOrUpdateTask}
-          initialValues={editTaskId ? tasks.find((task) => task.id === editTaskId) : undefined}
-        />
-      )}
-
-      <div className="task-list">
-        {userLoaded ? (
-          Object.keys(groupedTasks).map((category) => (
-            <div key={category} className="task-category">
-              <h2>{category}</h2>
-              {groupedTasks[category].map((task) => (
-                <div className="task" key={task.id}>
-                  <p>{task.title}</p>
-                  <div className="task-actions">
-                    <button onClick={() => handleEditTask(task)}>
-                      <FaEdit />
-                    </button>
-                    <button onClick={() => handleDeleteTask(task.id || "")}>
-                      <FaTrash />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ))
-        ) : (
-          <p>Loading tasks...</p>
+        {showForm && (
+          <TaskForm
+            editTaskId={editTaskId}
+            onClose={() => setShowForm(false)}
+            onSubmit={handleAddOrUpdateTask}
+            initialValues={editTaskId ? tasks.find((task) => task.id === editTaskId) : undefined}
+          />
         )}
+
+        <div className="task-list">
+          {userLoaded ? (
+            Object.keys(groupedTasks).map((category) => (
+              <div key={category} className="task-category">
+                <h2>{category}</h2>
+                {groupedTasks[category].map((task) => (
+                  <div className="task" key={task.id}>
+                    <p>{task.title}</p>
+                    <div className="task-actions">
+                      <button onClick={() => handleEditTask(task)}>
+                        <FaEdit />
+                      </button>
+                      <button onClick={() => handleDeleteTask(task.id || "")}>
+                        <FaTrash />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))
+          ) : (
+            <p>Loading tasks...</p>
+          )}
+        </div>
       </div>
-    </div>
     </ProtectedRoute>
   );
 }

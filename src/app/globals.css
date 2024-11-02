@@ -1,14 +1,7 @@
 :root {
   --background: #ffffff;
-  /* --foreground: #171717; */
 }
 
-/* @media (prefers-color-scheme: dark) {
-  :root { */
-    /* --background: #0a0a0a; */
-    /* --foreground: #ededed; */
-  /* }
-} */
 
 html,
 body {
@@ -17,7 +10,6 @@ body {
 }
 
 body {
-  /* color: var(--foreground); */
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -35,8 +27,32 @@ a {
   text-decoration: none;
 }
 
-/* @media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+.error {
+  text-align: center;
+  justify-content: center;
+  padding-top: 10px;
+  color: red;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.blink {
+  animation: blink-animation 1s steps(5, start) infinite;
+}
+
+@keyframes blink-animation {
+  to {
+      visibility: hidden;
   }
-} */
+}
+
+
+.swal2-popup {
+    width: 300px !important;
+    font-size: 14px; 
+}
+
+
+.swal-title {
+  font-size: 18px !important;
+}
+

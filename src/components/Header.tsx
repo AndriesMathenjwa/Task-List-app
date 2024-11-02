@@ -17,15 +17,15 @@ const Header = () => {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             setIsLogin(!!user);
-            setLoading(false); 
+            setLoading(false);
         });
         return () => unsubscribe();
     }, []);
 
     const handleLogout = async () => {
         await signOut(auth);
-        setIsLogin(false); 
-        router.push(LOGIN_ROUTE); 
+        setIsLogin(false);
+        router.push(LOGIN_ROUTE);
     };
 
     return (
@@ -35,7 +35,7 @@ const Header = () => {
                     <div className="logo">taskList</div>
                 </Link>
                 <ul className="nav-links">
-                    {!loading && !isLogin && ( 
+                    {!loading && !isLogin && (
                         <>
                             <Link href={LOGIN_ROUTE}><li>Login</li></Link>
                             <Link href={REGISTER_ROUTE}><li>Register</li></Link>
