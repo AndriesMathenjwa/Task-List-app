@@ -26,6 +26,15 @@ const RegisterPage: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        if (formData.password !== formData.confirmPassword) {
+            setError("Passwords do not match");
+            setIsBlinking(true);
+            setTimeout(() => {
+                setIsBlinking(false);
+                setError("");
+            }, 5000);
+            return;
+        }
         createUserWithEmailAndPassword(auth, formData.email, formData.password)
             .then((response) => {
                 Swal.fire({
