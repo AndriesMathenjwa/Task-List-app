@@ -104,6 +104,12 @@ const Profile = () => {
                 buttonsStyling: true,
                 confirmButtonColor: "#4CAF50",
             });
+            setFormData({
+                name: "",
+                email: "",
+                password: "",
+                picture: "",
+            });
         } catch (error) {
             console.error("Error updating profile:", error);
             setError("Error updating profile. Please try again");
