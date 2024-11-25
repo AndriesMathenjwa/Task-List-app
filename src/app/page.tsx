@@ -15,7 +15,7 @@ import { auth } from "@/services/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { FaTrash, FaEdit } from "react-icons/fa";
 import TaskForm from "@/components/TaskForm";
-import ProtectedRoute from "@/components/ProtectedRoute"
+import ProtectedRoute from "@/components/ProtectedRoute";
 import "./homePage.scss";
 
 interface TaskData {
@@ -134,7 +134,10 @@ export default function Home() {
                 <h2>{category}</h2>
                 {groupedTasks[category].map((task) => (
                   <div className="task" key={task.id}>
-                    <p>{task.title}</p>
+                    <div className="task-info">
+                      <p className="task-title">{task.title}</p>
+                      <p className="task-details">{task.details}</p>
+                    </div>
                     <div className="task-actions">
                       <button onClick={() => handleEditTask(task)}>
                         <FaEdit />
